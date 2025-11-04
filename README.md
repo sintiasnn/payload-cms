@@ -1,38 +1,53 @@
-# Payload Blank Template
+# Payload CMS with PostgreSQL
 
-This template comes configured with the bare minimum to get started on anything you need.
+This template comes configured with PayloadCMS 3.x using PostgreSQL database and Next.js 15.
 
-## Quick start
-
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
-
-## Quick Start - local setup
+## Quick Start - Local Setup
 
 To spin up this template locally, follow these steps:
 
-### Clone
+### Prerequisites
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+- Node.js 18+ or 20+
+- pnpm 9+
+- PostgreSQL database (local or remote)
 
 ### Development
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+1. Clone this repository
+2. `cp .env.example .env` to copy the example environment variables
+3. Update the `DATABASE_URL` in your `.env` file with your PostgreSQL connection string:
+   ```
+   DATABASE_URL=postgres://username:password@localhost:5432/database_name
+   ```
+4. `pnpm install` to install dependencies
+5. `pnpm dev` to start the dev server
+6. Open `http://localhost:3000/admin` in your browser
+7. Create your first admin user
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+That's it! Changes made in `./src` will be reflected in your app.
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### Scripts
 
-#### Docker (Optional)
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm seed` - Seed database with sample data
+- `npx tsx create-admin.ts` - Create admin user
+- `npx tsx reset-password.ts` - Reset admin password
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+### Docker (Optional)
+
+If you prefer to use Docker for local development with PostgreSQL, the provided docker-compose.yml file can be used.
 
 To do so, follow these steps:
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+1. Make sure your `.env` file has the correct `DATABASE_URL`:
+   ```
+   DATABASE_URL=postgres://postgres:password123@localhost:5432/payload
+   ```
+2. Run `docker-compose up -d` to start PostgreSQL in the background
+3. Follow the development steps above
 
 ## How it works
 
@@ -52,15 +67,35 @@ See the [Collections](https://payloadcms.com/docs/configuration/collections) doc
 
   This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
 
-### Docker
+## Docker Deployment
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+This project includes a production-ready Dockerfile for deployment.
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+### Building Docker Image
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+```bash
+docker build -t payload-cms:latest .
+```
+
+### Running with Docker
+
+```bash
+docker run -d \
+  --name payload-cms \
+  -p 3000:3000 \
+  -e DATABASE_URL="postgres://user:pass@host:5432/db" \
+  -e PAYLOAD_SECRET="your-secret-key" \
+  -e NODE_ENV=production \
+  payload-cms:latest
+```
+
+### Using Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+This will start both the application and PostgreSQL database.
 
 ## Questions
 
