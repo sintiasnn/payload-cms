@@ -9,6 +9,10 @@
 /.idea/*
 !/.idea/runConfigurations
 
+# IDE and Editor configs
+.vscode/
+.claude/
+
 # testing
 /coverage
 
