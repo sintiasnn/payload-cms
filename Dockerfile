@@ -41,6 +41,9 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
+# Install netcat for database connection checking
+RUN apk add --no-cache netcat-openbsd
+
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
